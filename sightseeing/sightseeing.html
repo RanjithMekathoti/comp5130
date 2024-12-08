@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nearby Sightseeing Points</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdyUlLyDSdNXdDhyNmGFd1XF-IoLfJL3U&callback=initMap&libraries=places" async defer></script>
+    
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('view.jpg') no-repeat center center fixed; /* Replace with your image URL */
+            background-size: cover;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Ensure full viewport height */
+        }
+
+        /* Header Styles */
+        h2 {
+            text-align: center;
+            color: white;
+            background-color: rgba(0, 123, 255, 0.7);
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 2em;
+        }
+
+        /* Map and List Styles */
+        #map, #SSList {
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        #map {
+            height: 400px;
+        }
+
+        #SSList {
+            list-style: none;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        #SSList li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #SSList li:last-child {
+            border-bottom: none;
+        }
+
+        /* Button Styles */
+        button {
+            display: block;
+            margin: 0 auto 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Increase the size of the Zip Code input box */
+        #zipCode {
+            width: 30%;
+            padding: 10px; /* Adjust padding for desired size */
+            font-size: 16px; /* Adjust font size for desired size */
+        }
+
+        /* Additional styles for the popup */
+        /* Popup container - can be the window in the foreground */
+        /* Style for blurring the entire page */
+        .blur-background {
+            filter: blur(5px);
+        }
+        /* Style for blurring elements when the popup is open */
+        .blur-element {
+            filter: blur(5px);
+        }
+
+        /* Style for the popup that overrides the blur */
+        #popupContainer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none; /* This ensures that clicks "go through" the container */
+        }
+        .popup {
+            pointer-events: auto; /* This re-enables clicks on the popup */
+            filter: none !important;
+            z-index: 1001; /* Ensure this is above the blurred background */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 80%;
+            max-width: 600px;
+            background: white;
+            border: 1px solid black;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            display: none; /* Hidden by default */
+        }
+
+        /* Style for the close button */
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #333; /* Change the close button color */
+        }
+        /* Add some spacing to the close button */
+        .close {
+            margin-top: -10px;
+            margin-right: 16px;
+        }
+
+        /* Popup content */
+        .popup-content {
+            clear: both;
+            margin-top: 20px;
+        }
+        /* Style for blurring the entire page */
+        .blur-background *:not(.popup) {
+            filter: blur(5px);
+        }
+        /* Style for the popup that overrides the blur */
+        .popup {
+            filter: none !important; /* The !important rule is to ensure that this rule has higher specificity */
+        }
+        /* Style for the trail name */
+        .popup-content h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        /* Style for the address */
+        .popup-content p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        /* Style for reviews */
+        .popup-content .reviews {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        /* Style for individual review items */
+        .popup-content .review-item {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        /* Style for the popup content */
+        .popup-content {
+            clear: both;
+            margin-top: 20px;
+            max-height: 70vh; /* Set a maximum height for the content */
+            overflow-y: auto; /* Enable vertical scrolling when content exceeds the maximum height */
+        }
+
+       .show-details-link {
+            color: #007bff;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nearby Sightseeing Points</h1>
+    <input type="text" id="zipCode" placeholder="Enter Zip Code">
+    <button onclick="findssPoints()">Find nearby Sightseeing Points</button>
+    <div id="map"></div>
+    <ul id="SSList"></ul> <!-- Area to display results -->
+    <div id="popupContainer"></div> <!-- Container for popup -->
+    <script src="script.js"></script>
+</body>
+</html>
