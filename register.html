@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Firebase Auth</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Add Lobster font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: url('register2.jpeg') no-repeat center center fixed; 
+            background-size: cover;
+            font-family: 'Lobster', cursive; /* Apply Lobster font to all text */
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        #MainForm {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-floating {
+            margin-bottom: 10px;
+        }
+        .form-floating label {
+            text-align: left;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        @media (min-width: 768px) {
+            #MainForm {
+                width: 50%;
+                max-width: 500px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <form id="MainForm" class="bg-white shadow rounded">
+        <h2 class="text-center mb-4">Traveler Sign-Up</h2>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="emailInp" placeholder="name@example.com">
+            <label for="emailInp">Email address</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="password" class="form-control" id="passwordInp" placeholder="Password">
+            <label for="passwordInp">Password</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="fnameInp" placeholder="First Name">
+            <label for="fnameInp">FirstName</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="lnameInp" placeholder="Last Name">
+            <label for="lnameInp">LastName</label>
+        </div>
+        <div class="d-flex flex-column align-items-center">
+            <button type="submit" class="btn btn-primary">Create New User</button>
+            <a href="login.html" class="btn btn-primary mt-2">Sign In</a>
+        </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+            import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-firestore.js";
+            import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+            const firebaseConfig = {
+                apiKey: "AIzaSyA8dkwDJZUWpWe-CKKs-lWtLIqu5VnweaU",
+                authDomain: "fir-ai-app-5950d.firebaseapp.com",
+                projectId: "fir-ai-app-5950d",
+                storageBucket: "fir-ai-app-5950d.appspot.com",
+                messagingSenderId: "594725262446",
+                appId: "1:594725262446:web:50a60f45b0c8caf3b9027f"
+            };
+          
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore();
+            const auth = getAuth(app);
+    
+            let EmailInp = document.getElementById('emailInp');
+            let PassInp = document.getElementById('passwordInp');
+            let FnameInp = document.getElementById('fnameInp');
+            let LnameInp = document.getElementById('lnameInp');
+            let MainForm = document.getElementById('MainForm');
+    
+            let RegisterUser = evt => {
+                evt.preventDefault();
+    
+                createUserWithEmailAndPassword(auth, EmailInp.value, PassInp.value)
+                .then(async(credentials)=>{
+                    var ref = doc(db, "UserAuthList", credentials.user.uid);
+                    await setDoc(ref, {
+                        firstname: FnameInp.value,
+                        lastname: LnameInp.value
+                    });
+    
+                    // Clear fields after successful registration
+                    EmailInp.value = '';
+                    PassInp.value = '';
+                    FnameInp.value = '';
+                    LnameInp.value = '';
+    
+                    alert("User successfully registered");
+                })
+                .catch((error)=>{
+                    alert(error.message);
+                    console.log(error.code);
+                    console.log(error.message);
+    
+                    // Clear the password field in case of an error
+                    PassInp.value = '';
+                });
+            }
+    
+            MainForm.addEventListener('submit', RegisterUser);
+        </script>
+</body>
+
+</html>

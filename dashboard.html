@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p>Only authenticated users can access this page.</p>
+        <button id="logoutBtn" class="btn btn-primary">Logout</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+        const firebaseConfig = {
+                apiKey: "AIzaSyA8dkwDJZUWpWe-CKKs-lWtLIqu5VnweaU",
+                authDomain: "fir-ai-app-5950d.firebaseapp.com",
+                projectId: "fir-ai-app-5950d",
+                storageBucket: "fir-ai-app-5950d.appspot.com",
+                messagingSenderId: "594725262446",
+                appId: "1:594725262446:web:50a60f45b0c8caf3b9027f"
+            };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Check if the user is authenticated
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // If not authenticated, redirect to login page
+                window.location.href = "login.html";
+            }
+        });
+
+        // Logout functionality
+        const logoutBtn = document.getElementById('logoutBtn');
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth).then(() => {
+                window.location.href = "login.html";
+            }).catch((error) => {
+                console.error("Error during logout:", error);
+            });
+        });
+    </script>
+</body>
+</html>
